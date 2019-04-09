@@ -1,6 +1,9 @@
 class Game {
     constructor() {
+        this.poleObjects = []
         this.pawnsObjects = []
+        this.selected = null;
+        this.poleContainer = new THREE.Object3D();
         this.pawnContainer = new THREE.Object3D();
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(
@@ -31,16 +34,39 @@ class Game {
             this.raycaster.setFromCamera(this.mouseVector, this.camera);
             var intersects = this.raycaster.intersectObjects(this.pawnContainer.children);
             if (intersects.length > 0) {
-                this.pawnsObjects.forEach(element => {
-                    if (element._color == 0xffff00) {
-                        element.color = this.id == 1 ? 0xdddddd : 0x111111
-                    }
-                });
                 for (var i = 0; i < this.pawnsObjects.length; i++) {
                     if (intersects[0].object.uuid == this.pawnsObjects[i].getElement().uuid) {
                         var object = this.pawnsObjects[i]
                         if (object.colorId == this.id) {
+                            this.pawnsObjects.forEach(element => {
+                                if (element._color == 0xffff00) {
+                                    element.color = this.id == 1 ? 0xdddddd : 0x111111
+                                }
+                            });
                             object.color = 0xffff00
+                            this.selected = object
+                        }
+                    }
+                }
+                return;
+            }
+            if (this.selected) {
+                var intersects = this.raycaster.intersectObjects(this.poleContainer.children);
+                if (intersects.length > 0) {
+                    for (var i = 0; i < this.poleObjects.length; i++) {
+                        if (intersects[0].object.uuid == this.poleObjects[i].pole.uuid) {
+                            var object = this.poleObjects[i]
+                            if (this.checkboard[object.x][object.y] == 0) {
+                                return;
+                            }
+                            this.selected.x = object.x * this.tileSize;
+                            this.selected.z = object.y * this.tileSize;
+                            this.pawns[object.x][object.y] = this.pawns[this.selected.logicX][this.selected.logicY]
+                            this.pawns[this.selected.logicX][this.selected.logicY] = 0
+                            this.selected.color = this.id == 1 ? 0xdddddd : 0x111111
+                            this.selected.logicX = object.x
+                            this.selected.logicY = object.y
+                            this.selected = null;
                         }
                     }
                 }
@@ -89,7 +115,7 @@ class Game {
     }
 
     getCheckboard() {
-        var container = new THREE.Object3D();
+        this.poleContainer = new THREE.Object3D();
         var blackPole = this.getBlackPole();
         var whitePole = this.getWhitePole();
         for (var i = 0; i < this.checkboard.length; i++) {
@@ -102,10 +128,11 @@ class Game {
 
                 pole.position.x = i * this.tileSize;
                 pole.position.z = j * this.tileSize;
-                container.add(pole)
+                this.poleContainer.add(pole)
+                this.poleObjects.push({ pole: pole, x: i, y: j })
             }
         }
-        return container;
+        return this.poleContainer;
     }
 
     getBlackPole() {
