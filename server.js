@@ -105,5 +105,5 @@ var server = http.createServer(function (request, response) {
 })
 
 server.listen(3000, function () {
-    console.log("serwer startuje na porcie 3000")
+    console.log("Checkers server v0.1 starts on port 3000")
 })
