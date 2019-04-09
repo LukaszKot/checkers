@@ -40,7 +40,8 @@ var servResponse = (req, res) => {
                     res.writeHead(200, { 'Content-Type': 'application/json;charset=utf-8' })
                     res.end(JSON.stringify({
                         status: "USER_ADDED",
-                        position: users.length
+                        position: users.length,
+                        enemy: users.length == 2 ? users[0] : null
                     }))
                 }
                 break;
@@ -48,6 +49,13 @@ var servResponse = (req, res) => {
                 users = []
                 res.writeHead(200, { 'Content-Type': 'application/json;charset=utf-8' })
                 res.end(JSON.stringify({ status: "RESET_HAVE_BEEN_DONE" }))
+            case "PLAYER_PENDING":
+                res.writeHead(200, { 'Content-Type': 'application/json;charset=utf-8' })
+                res.end(JSON.stringify({
+                    length: users.length,
+                    enemy: users.length == 2 ? users[1] : null
+                }))
+                break;
             default:
                 res.writeHead(404, { 'Content-Type': 'application/json;charset=utf-8' });
                 res.end(JSON.stringify({ error: "Error. Invalid request." }))
@@ -105,5 +113,5 @@ var server = http.createServer(function (request, response) {
 })
 
 server.listen(3000, function () {
-    console.log("Checkers server v0.1 starts on port 3000")
+    console.log("Checkers server v0.2 starts on port 3000")
 })

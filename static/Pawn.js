@@ -11,6 +11,12 @@ class Pawn {
         this.element = new THREE.Mesh(geometry, material);
     }
 
+    setParameters(logicX, logicY, colorId) {
+        this.logicX = logicX
+        this.logicY = logicY
+        this.colorId = colorId
+    }
+
     set color(val) {
         this.element.material = new THREE.MeshBasicMaterial({
             side: THREE.DoubleSide,
