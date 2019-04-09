@@ -26,6 +26,18 @@ class Ui {
                             if (result.position == 1) {
                                 this.focus.css("display", "block")
                                 this.waiting.css("display", "block")
+                                this.net.waitForPlayer()
+                                    .then((result) => {
+                                        console.log(result)
+                                        this.waiting.css("display", "none")
+                                        this.focus.css("display", "none")
+                                        this.status.html(result.status + "<br />Witaj "
+                                            + this.usernameInput.val() + ", grasz " + color + ". Twój przeciwnik to " + result.enemy)
+                                    })
+                            }
+                            else {
+                                this.status.html(result.status + "<br />Witaj "
+                                    + this.usernameInput.val() + ", grasz " + color + ". Twój przeciwnik to " + result.enemy)
                             }
                         }
                         if (result.status == "USER_WITH_THAT_NAME_ALREADY_EXISTS") {
