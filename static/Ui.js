@@ -31,7 +31,7 @@ class Ui {
                                         console.log(result)
                                         this.waiting.css("display", "none")
                                         this.focus.css("display", "none")
-                                        this.status.html(result.status + "<br />Witaj "
+                                        this.status.html("USER_ADDED" + "<br />Witaj "
                                             + this.usernameInput.val() + ", grasz " + color + ". Twój przeciwnik to " + result.enemy)
                                     })
                             }
